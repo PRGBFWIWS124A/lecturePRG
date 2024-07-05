@@ -30,7 +30,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             g.setColor(this.color);
         }
 
@@ -43,7 +43,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             g.drawLine(0, 0, 0, this.length);
             super.replay(g, boundsParam);
         }
@@ -59,7 +59,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             final double hl = this.length / 2;
             final Rectangle2D r = new Rectangle2D.Double();
             r.setFrame(-hl, -hl, this.length, this.length);
@@ -80,7 +80,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             final AffineTransform origTrans = g.getTransform();
             final Point2D center = origTrans.transform(new Point2D.Double(0, 0), null);
             final FontRenderContext frc = g.getFontRenderContext();
@@ -98,9 +98,9 @@ public class Canvas {
             final double w,
             final double h,
             final TextLayout tl,
-            final Rectangle boundsParam
+            final java.awt.Rectangle boundsParam
         ) {
-            final Rectangle r = new Rectangle(0, (int)-h, (int)w, (int)h);
+            final java.awt.Rectangle r = new java.awt.Rectangle(0, (int)-h, (int)w, (int)h);
             final Shape textShape = tl.getOutline(new AffineTransform());
             g.setColor(Color.BLACK);
             r.grow(4, 4);
@@ -130,7 +130,7 @@ public class Canvas {
             return true;
         }
 
-        abstract void replay(Graphics2D g, Rectangle boundsParam);
+        abstract void replay(Graphics2D g, java.awt.Rectangle boundsParam);
 
     }
 
@@ -151,7 +151,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             g.translate(this.x, this.y);
             if (boundsParam != null) {
                 Canvas.addToBounds(new Point2D.Double(this.x, this.y), boundsParam, g);
@@ -174,7 +174,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             Canvas.addCurrentPos(g, boundsParam);
             final AffineTransform t = g.getTransform();
             t.translate(0, this.length);
@@ -187,7 +187,7 @@ public class Canvas {
     private static class Pop extends GraphicAction {
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             g.setTransform(this.canvas.transformations.pop());
         }
 
@@ -196,7 +196,7 @@ public class Canvas {
     private static class Push extends GraphicAction {
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             this.canvas.transformations.push(g.getTransform());
         }
 
@@ -216,7 +216,7 @@ public class Canvas {
         }
 
         @Override
-        void replay(final Graphics2D g, final Rectangle boundsParam) {
+        void replay(final Graphics2D g, final java.awt.Rectangle boundsParam) {
             final AffineTransform t = g.getTransform();
             t.rotate(this.degree / 180.0 * Math.PI);
             g.setTransform(t);
@@ -273,17 +273,17 @@ public class Canvas {
         Canvas.INSTANCE.addAction(new DrawSquare(length));
     }
 
-    private static void addCurrentPos(final Graphics2D g, final Rectangle boundsParam) {
+    private static void addCurrentPos(final Graphics2D g, final java.awt.Rectangle boundsParam) {
         if (boundsParam != null) {
             Canvas.addToBounds(new Point2D.Float(0f, 0f), boundsParam, g);
         }
     }
 
-    private static void addToBounds(final Point2D point, final Rectangle boundsParam, final Graphics2D g) {
+    private static void addToBounds(final Point2D point, final java.awt.Rectangle boundsParam, final Graphics2D g) {
         boundsParam.add(g.getTransform().transform(point, null));
     }
 
-    private static void addToBounds(final Rectangle2D r, final Rectangle boundsParam, final Graphics2D g) {
+    private static void addToBounds(final Rectangle2D r, final java.awt.Rectangle boundsParam, final Graphics2D g) {
         final double maxX = r.getMaxX();
         final double maxY = r.getMaxY();
         final double minX = r.getMinX();
@@ -294,7 +294,7 @@ public class Canvas {
         Canvas.addToBounds(new Point2D.Double(minX, minY), boundsParam, g);
     }
 
-    protected Rectangle bounds;
+    protected java.awt.Rectangle bounds;
 
     private final ArrayList<Canvas.GraphicAction> actions = new ArrayList<>();
 
@@ -315,7 +315,7 @@ public class Canvas {
             synchronized (Canvas.this) {
                 final Graphics2D g2 = (Graphics2D)g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                final Rectangle clipBounds = g.getClipBounds();
+                final java.awt.Rectangle clipBounds = g.getClipBounds();
                 g2.setColor(Color.WHITE);
                 g2.fill(clipBounds);
                 g2.setColor(Color.BLACK);
@@ -348,12 +348,12 @@ public class Canvas {
 
         private void initBoundsIfNeeded(final Graphics2D g2) {
             if (Canvas.this.bounds == null) {
-                final Rectangle newBounds = new Rectangle();
+                final java.awt.Rectangle newBounds = new java.awt.Rectangle();
                 Canvas.this.transformations.clear();
                 for (final GraphicAction a : Canvas.this.actions) {
                     a.replay(g2, newBounds);
                 }
-                Canvas.this.bounds = new Rectangle(newBounds);
+                Canvas.this.bounds = new java.awt.Rectangle(newBounds);
             }
         }
 
